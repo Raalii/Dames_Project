@@ -30,7 +30,7 @@ public class CheckersData {
             for (int col = 0; col < 10; col++) {
                 if ( row % 2 == col % 2 ) {
                     if (row < 4)
-                        board[row][col] = BLACK_KING;
+                        board[row][col] = BLACK;
                     else if (row > 5)
                         board[row][col] = RED;
                     else
