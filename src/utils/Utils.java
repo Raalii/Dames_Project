@@ -26,4 +26,9 @@ public class Utils {
 
 		return userInput;
 	}
+	
+	
+	static public void writeInTextFile(String text, String file) {
+		
+	}
 }
