@@ -71,6 +71,10 @@ public class Checkers extends JPanel {
 
 	private void initGame(String player1, String player2) {
 		if (launchGameButton != null && firstPlayer != null && secondPlayer != null) {
+			if (player1 == null || player2 == null || player1.length() == 0 || player2.length() == 0) {
+				message.setText("Vous devez définir un nom pour chacun de vos joueurs !");
+				return;
+			}
 			remove(launchGameButton);
 			remove(firstPlayer);
 			remove(secondPlayer);
@@ -78,6 +82,7 @@ public class Checkers extends JPanel {
 
 		this.player1 = player1;
 		this.player2 = player2;
+		System.out.println(player1);
 		init();
 		add(board);
 		add(newGameButton);
@@ -99,11 +104,13 @@ public class Checkers extends JPanel {
 		remove(board);
 		remove(newGameButton);
 		remove(resignButton);
-		remove(message);
 		remove(goToMenuButton);
 		add(launchGameButton);
 		add(firstPlayer);
 		add(secondPlayer);
+		add(message);
+		message.setBounds(20, 700, 700, 60);
+		message.setText("Veuillez choisir un nom pour chaque joueur avant de commencer");
 		launchGameButton.setBounds(810, 130, 240, 60);
 		repaint();
 	}
@@ -390,7 +397,7 @@ public class Checkers extends JPanel {
 
 		public void mousePressed(MouseEvent evt) {
 			if (gameInProgress == false)
-				message.setText("Click \"New Game\" to start a new game.");
+				message.setText("Veuillez cliquer sur 'Nouvelle Partie' pour commencer une autre game");
 			else {
 				int col = (evt.getX() - 2) / 80;
 				int row = (evt.getY() - 2) / 80;
