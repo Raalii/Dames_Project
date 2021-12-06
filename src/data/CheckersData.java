@@ -45,9 +45,9 @@ public class CheckersData {
 			for (int col = 0; col < 10; col++) {
 				if (row % 2 == col % 2) {
 					if (row < 4)
-						board[row][col] = BLACK_KING;
+						board[row][col] = BLACK;
 					else if (row > 5)
-						board[row][col] = RED_KING;
+						board[row][col] = RED;
 					else
 						board[row][col] = EMPTY;
 				} else {
@@ -217,6 +217,20 @@ public class CheckersData {
 
 		if (board[r3][c3] != EMPTY)
 			return false; // (r3,c3) already contains a piece.
+			// This is a potential queen movement. 
+			int incrementColumn = (c1 > c2) ? -1 : 1;
+			int incrementRow = (r1 > r2) ? -1 : 1;
+			int i = r1;
+			int j = c1;
+			while(i != r2 && j != c2) {
+				i += incrementRow;
+				j += incrementColumn;
+				if (board[i][j] != EMPTY && r2 != i && j != c2) {
+					return false;
+				}
+				
+			}
+
 
 		if (player == RED) {
 			if (board[r2][c2] != BLACK && board[r2][c2] != BLACK_KING)
@@ -229,12 +243,26 @@ public class CheckersData {
 		}
 
 	} // end canJump()
-
+ 
 	private boolean canMove(int player, int r1, int c1, int r2, int c2) {
 
 		if (r2 < 0 || r2 >= 10 || c2 < 0 || c2 >= 10)
 			return false; // (r2,c2) is off the board.
-
+		if (r1 - r2 != -1 || c1 - c2 != -1 || c1 - c2 != 1 || r1 - r2 != 1) {
+			// This is a potential queen movement. 
+			int incrementColumn = (c1 > c2) ? -1 : 1;
+			int incrementRow = (r1 > r2) ? -1 : 1;
+			int i = r1;
+			int j = c1;
+			while(i != r2 && j != c2) {
+				i += incrementRow;
+				j += incrementColumn;
+				if (board[i][j] != EMPTY) {
+					return false;
+				}
+				
+			}
+		}
 		if (board[r2][c2] != EMPTY)
 			return false; // (r2,c2) already contains a piece.
 
