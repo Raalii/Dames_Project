@@ -33,8 +33,8 @@ public class Utils {
 	/*
 	 * Write in text file with array
 	 */
-	static public void writeInTextFile(int[][] tab, String file) {
-		try (FileWriter myWriter = new FileWriter(RELATIVE_TEXT_PATH + file + ".txt", true);) {
+	static public void writeInTextFile(int[][] tab, String fileName) {
+		try (FileWriter myWriter = new FileWriter(RELATIVE_TEXT_PATH + fileName + ".txt", true);) {
 			for (int i = 0; i < tab.length; i++) {
 				for (int j = 0; j < tab[i].length; j++) {
 					if (i == 0 && j == 0) {
@@ -65,85 +65,84 @@ public class Utils {
 	static public int[] getItemInPropertiesFile(String key) {
 		try (InputStream input = new FileInputStream(RELATIVE_PROPERTIES_PATH + "gameResult.properties")) {
 
-            Properties prop = new Properties();
-            prop.load(input);
-            
-            System.out.println(prop.getProperty(key));
-            return convertResultGamePropertiesFormatIntoArray(prop.getProperty(key));
-        } catch (IOException io) {
-            io.printStackTrace();
-        }
-		
+			Properties prop = new Properties();
+			prop.load(input);
+
+			System.out.println(prop.getProperty(key));
+			return convertResultGamePropertiesFormatIntoArray(prop.getProperty(key));
+		} catch (IOException io) {
+			io.printStackTrace();
+		}
+
 		return null;
 	}
-	
-	
+
 	static public int[] convertResultGamePropertiesFormatIntoArray(String currentPropertie) {
 		if (currentPropertie == null) {
-			return null;		
+			return null;
 		}
-		
+
 		String[] stringArray = currentPropertie.split("#");
 		int[] intArray = new int[stringArray.length];
-		
-		
+
 		for (int i = 0; i < stringArray.length; i++) {
 			intArray[i] = Integer.parseInt(stringArray[i]);
 		}
-		
+
 		return intArray;
-		
-		
-		
+
 	}
-	
-	
+
 	static public void displayTable(int[] arr) {
 		for (int i = 0; i < arr.length; i++) {
 			if (i == 0) {
-				System.out.print(" [");				
-			} 
-			
+				System.out.print(" [");
+			}
+
 			System.out.print(arr[i] + ", ");
-			
+
 			if (i == arr.length - 1) {
 				System.out.println("]");
 			}
 		}
 	}
-	
+
 	/*
-	 * stat corresponding to the stat of the player in this format in the properties file (NumberofVictory#NumberOfdefeat)
-	 * */
-	
+	 * stat corresponding to the stat of the player in this format in the
+	 * properties file (NumberofVictory#NumberOfdefeat)
+	 */
+
 	static public void setItemInPropertiesFile(String key, int[] stats) {
-		try (OutputStream output = new FileOutputStream(RELATIVE_PROPERTIES_PATH + "gameResult.properties")) {
+		try {
 
-            Properties prop = new Properties();
-            String currentStat = "";
-            // set the properties value
-            for (int i = 0; i < stats.length; i++) {
-            	currentStat += String.valueOf(stats[i]);					
-            	if (i != stats.length - 1) {
-            		currentStat += "#";
+			Properties prop = new Properties();
+			String currentStat = "";
+			// set the properties value
+			for (int i = 0; i < stats.length; i++) {
+				currentStat += String.valueOf(stats[i]);
+				if (i != stats.length - 1) {
+					currentStat += "#";
 				}
-			}
-            
-            prop.setProperty(key, currentStat);
+			}			
+			
+			FileInputStream in;
+			in = new FileInputStream(RELATIVE_PROPERTIES_PATH + "gameResult.properties");
+			Properties props = new Properties();
+			props.load(in);
+			in.close();
 
-            // save properties to project root folder
-            prop.store(output, null);
+			FileOutputStream out = new FileOutputStream(RELATIVE_PROPERTIES_PATH + "gameResult.properties");
+			props.setProperty(key, currentStat);
+			props.store(out, null);
+			out.close();
 
-            System.out.println(prop);
 
-        } catch (IOException io) {
-            io.printStackTrace();
-        }
+			System.out.println(prop);
+
+		} catch (IOException io) {
+			io.printStackTrace();
+		}
 
 	}
-	
-	
-	
-	
 
 }

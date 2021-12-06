@@ -6,6 +6,7 @@ import javax.swing.*;
 
 import data.CheckersData;
 import data.CheckersMove;
+import utils.Utils;
 
 /**
  * This panel lets two users play checkers against each other. Red always starts
@@ -39,19 +40,18 @@ public class Checkers extends JPanel {
 	private JButton launchGameButton; // Button to start the gale (after the was
 										// defines by players).
 
-	private JLabel messageMenu; // Differents message to be send in menu (no
-								// player2's name has selected...)
+	// private JLabel messageMenu; // Differents message to be send in menu (no
+	// player2's name has selected...)
 
 	private JTextField firstPlayer, secondPlayer; // Name define in the input;
 
-	private boolean firstGame = false;
-
 	private JLabel message; // Label for displaying messages to the user.
 
-	String player1;
-	String player2;
-
 	Board board;
+
+	String player1;
+
+	String player2;
 
 	public Checkers() {
 		init();
@@ -150,6 +150,7 @@ public class Checkers extends JPanel {
 			message.setFont(new Font("Serif", Font.BOLD, 25));
 			message.setForeground(Color.PINK);
 			board = new CheckersData();
+			board.updateTextFile(player1, player2);
 			doNewGame();
 		}
 
@@ -192,12 +193,34 @@ public class Checkers extends JPanel {
 				return;
 			}
 			if (currentPlayer == CheckersData.RED)
-				gameOver(player1 + " a abandonné : " + player2 + " a gagné !");
+				gameOver(player1 + " a abandonné : " + player2 + " a gagné !", player2, player1);
 			else
-				gameOver(player2 + " a abandonné : " + player1 + " a gagné !");
+				gameOver(player2 + " a abandonné : " + player1 + " a gagné !", player1, player2);
 		}
 
-		void gameOver(String str) {
+		void gameOver(String str, String winner, String losing) {
+			int[] oldWinnerStat = Utils.getItemInPropertiesFile(winner);
+			int[] oldLosingStat = Utils.getItemInPropertiesFile(losing);
+			if (oldWinnerStat == null) {
+				int[] newStats = new int[] { 1, 0 };
+				Utils.setItemInPropertiesFile(winner, newStats);
+			} else {
+				oldWinnerStat[0] = oldWinnerStat[0] + 1;
+				
+				Utils.setItemInPropertiesFile(winner, oldWinnerStat);
+			}
+			
+			System.out.println(oldLosingStat);
+			if (oldLosingStat == null) {
+				int[] newStats = new int[] { 0, 1 };
+				Utils.setItemInPropertiesFile(losing, newStats);
+			} else {
+				Utils.displayTable(oldLosingStat);
+				oldLosingStat[1] = oldLosingStat[1] + 1;
+				Utils.displayTable(oldLosingStat);
+				Utils.setItemInPropertiesFile(losing, oldLosingStat);
+			}
+
 			message.setText(str);
 			newGameButton.setEnabled(true);
 			resignButton.setEnabled(false);
@@ -257,7 +280,7 @@ public class Checkers extends JPanel {
 				currentPlayer = CheckersData.BLACK;
 				legalMoves = board.getLegalMoves(currentPlayer);
 				if (legalMoves == null)
-					gameOver(player2 + " n'a plus de pions, notre vainqueur est : " + player1);
+					gameOver(player2 + " n'a plus de pions, notre vainqueur est : " + player1, player1, player2);
 				else if (legalMoves[0].isJump())
 					message.setText(player2 + " vous devez manger le pion !");
 				else
@@ -266,7 +289,7 @@ public class Checkers extends JPanel {
 				currentPlayer = CheckersData.RED;
 				legalMoves = board.getLegalMoves(currentPlayer);
 				if (legalMoves == null)
-					gameOver(player1 + " n'a plus de pions, notre vainqueur est : " + player2);
+					gameOver(player1 + " n'a plus de pions, notre vainqueur est : " + player2, player2, player1);
 				else if (legalMoves[0].isJump())
 					message.setText(player1 + " vous devez manger le pion !");
 				else
